@@ -3,6 +3,7 @@ using System.Threading;
 using IotWeb.Server;
 using IotWeb.Common.Util;
 using IotWeb.Common.Http;
+using IotWeb.Server.Helper;
 
 namespace WebHost.Desktop
 {
@@ -33,7 +34,7 @@ namespace WebHost.Desktop
         static void Main(string[] args)
 		{
             // Set up and run the server
-			HttpServer server = new HttpServer(8000);
+			HttpServer server = new HttpServer(8000, new MultiPartFileStorageHandler());
             server.AddHttpRequestHandler(
                 "/",
                 new HttpResourceHandler(

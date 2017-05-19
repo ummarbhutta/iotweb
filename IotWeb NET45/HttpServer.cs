@@ -1,13 +1,14 @@
 ﻿using IotWeb.Common.Http;
+using IotWeb.Server.Helper;
 
 namespace IotWeb.Server
 {
 	public class HttpServer : BaseHttpServer
 	{
-		public HttpServer(int port)
-			: base(new SocketServer(port))
-		{
-			// No configuration required
-		}
-	}
+        public HttpServer(int port, MultiPartFileStorageHandler multiPartFileStorageHandler)
+            : base(new SocketServer(port), multiPartFileStorageHandler)
+        {
+            // No configuration required
+        }
+    }
 }

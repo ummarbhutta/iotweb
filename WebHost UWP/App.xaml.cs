@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 using IotWeb.Common.Util;
 using IotWeb.Common.Http;
 using IotWeb.Server;
+using IotWeb.Server.Helper;
 
 namespace WebHost_UWP
 {
@@ -59,7 +60,7 @@ namespace WebHost_UWP
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             // Run the web server
-            m_server = new HttpServer(8000);
+            m_server = new HttpServer(8000, new MultiPartFileStorageHandler());
             m_server.AddHttpRequestHandler(
                 "/",
                 new HttpResourceHandler(

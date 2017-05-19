@@ -27,12 +27,18 @@ namespace IotWeb.Common.Http
 		/// </summary>
 		public string QueryString { get; private set; }
 
-		/// <summary>
-		/// Constructor with a method
-		/// </summary>
-		/// <param name="method"></param>
-		/// <param name="url"></param>
-		internal HttpRequest(HttpMethod method, string url)
+        /// <summary>
+        /// Gets the decoded request data.
+        /// </summary>
+        /// <value>The decoded data.</value>
+        public DecodedData DecodedData { get; internal set; }
+
+        /// <summary>
+        /// Constructor with a method
+        /// </summary>
+        /// <param name="method"></param>
+        /// <param name="url"></param>
+        internal HttpRequest(HttpMethod method, string url)
 			: base()
 		{
 			Method = method;
