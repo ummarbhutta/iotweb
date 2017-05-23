@@ -102,9 +102,13 @@ namespace IotWeb.Common.Http
             {
                 request = ParseRequest(input);
                 _tempData = null;
-
-                if ((request == null) || !m_connected)
+                
+                if (request == null || !m_connected)
+                {
+                    DeleteTempFiles();
                     return; // Nothing we can do, just drop the connection
+                }
+
                 // Do we have any content in the body ?
                 if (request.Headers.ContainsKey(HttpHeaders.ContentType))
                 {
@@ -187,15 +191,20 @@ namespace IotWeb.Common.Http
             // Apply the after filters here
             m_server.ApplyAfterFilters(request, response, context);
 
+            DeleteMultipartRequestTempFiles();
+
+            // Write the response
+            response.Send(output);
+            output.Flush();
+        }
+
+        private void DeleteMultipartRequestTempFiles()
+        {
             if (decodedData != null)
             {
                 var files = decodedData.Files.GetFilesTempPath();
                 m_server.MultiPartFileStorageHandler.DeleteFiles(files);
             }
-            
-            // Write the response
-            response.Send(output);
-            output.Flush();
         }
 
         #region Internal Implementation
@@ -634,7 +643,7 @@ namespace IotWeb.Common.Http
                         }
                     }
                 }
-
+                
                 int noOfBytes = 0;
 
                 if (boundaryFind || _tempDataCurrentIndex == _dataRead)

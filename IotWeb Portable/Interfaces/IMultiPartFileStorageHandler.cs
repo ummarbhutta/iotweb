@@ -12,5 +12,7 @@ namespace IotWeb.Common.Interfaces
         string GetTempFilePath(string fileName);
 
         bool DeleteFiles(List<string> filesName);
+
+        void ClearTempFolder();
     }
 }

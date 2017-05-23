@@ -22,6 +22,7 @@ namespace IotWeb.Server.Helper
                 _storageFolder = storageFolder;
             
             SetStoragePath();
+            ClearTempFolder();
         }
 
         private void SetStoragePath()
@@ -83,6 +84,19 @@ namespace IotWeb.Server.Helper
             }
             
             return true;
+        }
+        
+        public void ClearTempFolder()
+        {
+            if (Directory.Exists(StoragePath))
+            {
+                DirectoryInfo di = new DirectoryInfo(StoragePath);
+
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    file.Delete();
+                }
+            }  
         }
     }
 }
