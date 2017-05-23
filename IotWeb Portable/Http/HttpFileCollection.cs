@@ -28,6 +28,15 @@ namespace IotWeb.Common.Http
             }
         }
 
+        public HttpFile this[int index]
+        {
+            get
+            {
+                return _files.Count > index ? _files.ElementAt(index).Value : null;
+            }
+        }
+
+
         /// <summary>
         /// Checks if a file exists.
         /// </summary>

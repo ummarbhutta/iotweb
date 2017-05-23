@@ -38,6 +38,8 @@ namespace IotWeb.Common.Http
         private int _startIndex = 0;
         private DecodedData decodedData;
         private int _contentLength;
+        private long _totalDataRead;
+        private Stream fileStream = null;
 
         // States for the request parser
         private enum RequestParseState
@@ -506,6 +508,12 @@ namespace IotWeb.Common.Http
 
             MoveToNextBoundary();
 
+            if (fileStream != null)
+            {
+                fileStream.Flush();
+                fileStream.Dispose();
+            }
+
             return _currentElement;
         }
 
@@ -536,20 +544,19 @@ namespace IotWeb.Common.Http
         {
             try
             {
-                if (_tempDataIndexBeforeBodyReading != -1 && _dataRead - _tempDataIndexBeforeBodyReading == _contentLength)
+                if (_tempDataIndexBeforeBodyReading != -1 && _totalDataRead - _tempDataIndexBeforeBodyReading == _contentLength)
                 {
                     _endOfStream = true;
                     return;
                 }
                 
                 if (bufferOffset < 0)
-                {
                     bufferOffset = 0;
-                }
 
                 _tempData = new byte[10000000];
                 _dataRead = _inputStream.Read(_tempData, bufferOffset, _tempData.Length);
-                
+                _totalDataRead += _dataRead;
+
                 if (_dataRead == 0)
                 {
                     _endOfStream = true;
@@ -564,7 +571,7 @@ namespace IotWeb.Common.Http
             }
             
         }
-
+        
         private void MoveToNextBoundary()
         {
             var bufferOffset = 0;
@@ -657,12 +664,13 @@ namespace IotWeb.Common.Http
                     if (_currentElement.Filename != "")
                     {
                         if (string.IsNullOrEmpty(_currentElement.TempFilePath))
+                        { 
                             _currentElement.TempFilePath = m_server.MultiPartFileStorageHandler.GetTempFilePath(_currentElement.Filename);
+                            fileStream = m_server.MultiPartFileStorageHandler.GetFile(Path.GetFileName(_currentElement.TempFilePath));
+                        }
 
-                        var stream = m_server.MultiPartFileStorageHandler.GetFile(Path.GetFileName(_currentElement.TempFilePath));
-                        stream.Write(_tempData, _startIndex, noOfBytes);
-                        stream.Flush();
-                        stream.Dispose();
+                        if (fileStream != null)
+                            fileStream.Write(_tempData, _startIndex, noOfBytes);
                     }
                 }
                 else
@@ -877,17 +885,18 @@ namespace IotWeb.Common.Http
         public class Element
         {
             public string ContentType;
-            public string Filename;
-            public string TempFilePath;
-            public string Content;
-            public long Length;
             public string Name;
-            public long Start;
-
+            public string Content;
+            public string TempFilePath;
+            public string Filename;
+            
             public override string ToString()
             {
-                return "ContentType " + ContentType + ", Name " + Name + ", Filename " + Filename + ", Start " +
-                       Start.ToString() + ", Length " + Length.ToString();
+                return "ContentType " + ContentType + 
+                        ", Name " + Name + 
+                        ", Content " + Filename + 
+                        ", TempFilePath " + TempFilePath + 
+                        ", Filename " + Filename;
             }
         }
     }
