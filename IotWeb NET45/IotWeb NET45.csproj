@@ -62,6 +62,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\FileDownloadProvider.cs" />
+    <Compile Include="Helper\FileDownloadProviderFactory.cs" />
     <Compile Include="Helper\HybridSessionStorageHandler.cs" />
     <Compile Include="HttpServer.cs" />
     <Compile Include="SocketServer.cs" />

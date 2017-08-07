@@ -107,6 +107,8 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\FileDownloadProvider.cs" />
+    <Compile Include="Helper\FileDownloadProviderFactory.cs" />
     <Compile Include="Helper\HybridSessionStorageHandler.cs" />
     <Compile Include="HttpServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

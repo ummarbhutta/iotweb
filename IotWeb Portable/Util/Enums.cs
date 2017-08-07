@@ -11,4 +11,17 @@ namespace IotWeb.Common.Util
         Size,
         LastAccessTime
     }
+
+    /// <summary>
+    /// Possible values of file access mode
+    /// </summary>
+    public enum FileAccessMode
+    {
+        Append,
+        Create,
+        CreateNew,
+        Open,
+        OpenOrCreate,
+        Truncate
+    }
 }

@@ -24,10 +24,13 @@ namespace IotWeb.Common.Http
             get { return _sessionStorageHandler; }
         }
 
-        protected BaseHttpServer(ISocketServer server, ISessionStorageHandler sessionStorageHandler)
+        public IFileDownloadProviderFactory DownloadProviderFactoryInstance { get; set; }
+
+        protected BaseHttpServer(ISocketServer server, ISessionStorageHandler sessionStorageHandler, IFileDownloadProviderFactory downloadProviderFactory)
             : this(server)
         {
             _sessionStorageHandler = sessionStorageHandler;
+            DownloadProviderFactoryInstance = downloadProviderFactory;
         }
 
         protected BaseHttpServer(ISocketServer server)

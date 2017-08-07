@@ -25,5 +25,6 @@
 		public const string SetCookie = "Set-Cookie";
 		public const string Server = "Server";
 		public const string WWWAuthenticate = "WWW-Authenticate";
-	}
+        public const string ContentDisposition = "Content-Disposition";
+    }
 }

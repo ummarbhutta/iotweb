@@ -34,5 +34,14 @@ namespace IotWeb.Common.Http
         /// </summary>
         /// <param name="uri"></param>
         public abstract void HandleRequest(string uri);
+
+        /// <summary>
+        /// This method is called when all the contents are written to output stream,
+        /// If a cleanup is required regarding a specific request, child class should override this method
+        /// </summary>
+        public virtual void RequestCompleted()
+        {
+
+        }
     }
 }

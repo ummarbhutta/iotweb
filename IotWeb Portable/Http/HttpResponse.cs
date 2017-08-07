@@ -14,7 +14,9 @@ namespace IotWeb.Common.Http
 
 		public string ResponseMessage { get; set; }
 
-		internal HttpResponse()
+        public string FileDownloadPath { get; set; }
+
+        internal HttpResponse()
 			: base()
 		{
 			ResponseCode = HttpResponseCode.Ok;

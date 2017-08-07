@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using IotWeb.Common.Util;
 using Newtonsoft.Json;
+using IotWeb.Common.Interfaces;
 
 namespace IotWeb.Common.Http
 {
@@ -83,6 +84,7 @@ namespace IotWeb.Common.Http
             HttpException parseError = null;
 			HttpContext context = null;
             SessionHandler sessionHandler = null;
+            HttpHandlerBase handler = null;
 
             // Process the request
             try
@@ -204,7 +206,7 @@ namespace IotWeb.Common.Http
 					}
 					// Dispatch to the handler
 					string partialUri;
-					HttpHandlerBase handler = m_server.GetHandlerForUri(request.URI, out partialUri) as HttpHandlerBase;
+					handler = m_server.GetHandlerForUri(request.URI, out partialUri) as HttpHandlerBase;
 					if (handler == null)
 						throw new HttpNotFoundException();
 
@@ -244,8 +246,38 @@ namespace IotWeb.Common.Http
             }
 
             // Write the response
-            response.Send(output);
+            if(string.IsNullOrEmpty(response.FileDownloadPath))
+            {
+                response.Send(output);
+            }
+            else
+            {
+                try
+                {
+                    //File download is requested
+                    IFileDownloadProvider dlProvider = m_server?.DownloadProviderFactoryInstance?.GetFileDownloadProvider();
+                    if (dlProvider != null)
+                    {
+                        //download provider registered
+                        using (Stream fstream = dlProvider.GetFileStream(response.FileDownloadPath))
+                        {
+                            //TODO: Call appropriate methods here for file download                        
+                        }
+                    }
+                    else
+                    {
+                        //TODO: Handle the error, If for some reason download provider can't be retrieved
+                    }
+                }catch(Exception e)
+                {
+                    response.ResponseCode = HttpResponseCode.InternalServerError;
+                    response.ResponseMessage = "Error in file download, " + e.Message;
+                    response.Send(output);
+                }
+            }
+
             output.Flush();
+            handler?.RequestCompleted();
         }
         
 	    #region Internal Implementation
