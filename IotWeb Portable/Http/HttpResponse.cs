@@ -88,8 +88,12 @@ namespace IotWeb.Common.Http
             }
             // Write the body
             WriteLine(output, "");
-            long bytesToWrite = Content.Position;
-            Content.SetLength(bytesToWrite);
+            if (string.IsNullOrEmpty(this.FileDownloadPath))
+            {
+                //Not a file download
+                long bytesToWrite = Content.Position;
+                Content.SetLength(bytesToWrite);
+            }
             Content.Seek(0, SeekOrigin.Begin);
             Content.CopyTo(output);
         }

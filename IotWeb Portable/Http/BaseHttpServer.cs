@@ -88,7 +88,7 @@ namespace IotWeb.Common.Http
 		/// </summary>
 		/// <param name="uri"></param>
 		/// <param name="handler"></param>
-        public void AddHttpRequestHandler(string uri, IHttpRequestHandler handler)
+        public void AddHttpRequestHandler(string uri, HttpRequestHandlerBase handler)
         {
             // TODO: Verify URI
             lock (m_handlers)

@@ -84,7 +84,7 @@ namespace IotWeb.Common.Http
             HttpException parseError = null;
 			HttpContext context = null;
             SessionHandler sessionHandler = null;
-            IHttpRequestHandler handler = null;
+            HttpRequestHandlerBase handler = null;
 
             // Process the request
             try
@@ -206,7 +206,7 @@ namespace IotWeb.Common.Http
 					}
 					// Dispatch to the handler
 					string partialUri;
-					handler = m_server.GetHandlerForUri(request.URI, out partialUri);
+					handler = m_server.GetHandlerForUri(request.URI, out partialUri) as HttpRequestHandlerBase;
 					if (handler == null)
 						throw new HttpNotFoundException();
                     handler.HandleRequest(partialUri, request, response, context);

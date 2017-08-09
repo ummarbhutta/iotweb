@@ -19,7 +19,7 @@ namespace IotWeb.Server.Helper
         {
             try
             {
-                FileStream fs = File.Open(path, FileMode.Open);
+                FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 return fs;
             }
             catch
