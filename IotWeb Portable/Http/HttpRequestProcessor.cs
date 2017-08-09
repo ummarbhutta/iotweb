@@ -206,12 +206,10 @@ namespace IotWeb.Common.Http
 					}
 					// Dispatch to the handler
 					string partialUri;
-					handler = m_server.GetHandlerForUri(request.URI, out partialUri) as HttpHandlerBase;
+					IHttpRequestHandler handler = m_server.GetHandlerForUri(request.URI, out partialUri);
 					if (handler == null)
 						throw new HttpNotFoundException();
-
-                    handler.InitializeHttpHandlerBase(request, response, context);
-                    handler.HandleRequest(partialUri);
+                    handler.HandleRequest(partialUri, request, response, context);
                 }
             }
             catch (HttpException ex)
