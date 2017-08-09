@@ -17,8 +17,15 @@ namespace IotWeb.Server.Helper
         /// <returns></returns>
         public Stream GetFileStream(string path)
         {
-            //TODO: Implement it for .NET45
-            throw new NotImplementedException();
+            try
+            {
+                FileStream fs = File.Open(path, FileMode.Open);
+                return fs;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

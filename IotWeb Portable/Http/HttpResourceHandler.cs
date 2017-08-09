@@ -59,5 +59,10 @@ namespace IotWeb.Common.Http
             response.Headers[HttpHeaders.ContentType] = MimeType.FromExtension(resourceName);
             resource.CopyTo(response.Content);
         }
+
+        public void RequestCompleted()
+        {
+            
+        }
     }
 }

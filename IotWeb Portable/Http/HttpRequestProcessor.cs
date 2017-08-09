@@ -84,7 +84,7 @@ namespace IotWeb.Common.Http
             HttpException parseError = null;
 			HttpContext context = null;
             SessionHandler sessionHandler = null;
-            HttpHandlerBase handler = null;
+            IHttpRequestHandler handler = null;
 
             // Process the request
             try
@@ -206,7 +206,7 @@ namespace IotWeb.Common.Http
 					}
 					// Dispatch to the handler
 					string partialUri;
-					IHttpRequestHandler handler = m_server.GetHandlerForUri(request.URI, out partialUri);
+					handler = m_server.GetHandlerForUri(request.URI, out partialUri);
 					if (handler == null)
 						throw new HttpNotFoundException();
                     handler.HandleRequest(partialUri, request, response, context);
@@ -259,7 +259,9 @@ namespace IotWeb.Common.Http
                         //download provider registered
                         using (Stream fstream = dlProvider.GetFileStream(response.FileDownloadPath))
                         {
-                            //TODO: Call appropriate methods here for file download                        
+                            response.Content = fstream;
+                            response.Content.Position = fstream.Length;
+                            response.Send(output);
                         }
                     }
                     else
@@ -268,6 +270,7 @@ namespace IotWeb.Common.Http
                     }
                 }catch(Exception e)
                 {
+                    response.FileDownloadPath = null;
                     response.ResponseCode = HttpResponseCode.InternalServerError;
                     response.ResponseMessage = "Error in file download, " + e.Message;
                     response.Send(output);

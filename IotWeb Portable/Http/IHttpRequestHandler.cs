@@ -17,5 +17,11 @@
         /// <param name="response"></param>
         /// <param name="context"></param>
         void HandleRequest(string uri, HttpRequest request, HttpResponse response, HttpContext context);
+
+        /// <summary>
+        /// This method is called when all the contents are written to output stream,
+        /// If a cleanup is required regarding a specific request, child class should override this method
+        /// </summary>
+        void RequestCompleted();
     }
 }

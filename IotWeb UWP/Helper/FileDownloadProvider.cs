@@ -17,8 +17,15 @@ namespace IotWeb.Server.Helper
         /// <returns></returns>
         public Stream GetFileStream(string path)
         {
-            //TODO: Implement it for UWP
-            throw new NotImplementedException();
+            try
+            {
+                FileStream fs = File.Open(path, FileMode.Open);
+                return fs.AsInputStream().AsStreamForRead();
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
