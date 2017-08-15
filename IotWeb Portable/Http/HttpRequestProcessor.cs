@@ -149,6 +149,7 @@ namespace IotWeb.Common.Http
 				context = new HttpContext();
                 response = new HttpResponse();
 
+                #region Session
                 //Get session id from cookies
                 var sessionId = GetSessionIdentifier(request.Cookies);
                 var isNewRequest = string.IsNullOrEmpty(sessionId);
@@ -183,7 +184,9 @@ namespace IotWeb.Common.Http
                         response.Cookies.Add(new Cookie(SessionName, sessionHandler.SessionId));
                     }
                 }
-                
+
+                #endregion
+
                 // Apply filters
                 if (m_server.ApplyBeforeFilters(request, response, context))
 				{
@@ -230,6 +233,7 @@ namespace IotWeb.Common.Http
 			// Apply the after filters here
 			m_server.ApplyAfterFilters(request, response, context);
 
+            #region Session
             //Update the session before sending the response
             if (sessionHandler != null)
             {
@@ -242,6 +246,7 @@ namespace IotWeb.Common.Http
                     response.Cookies.Add(new Cookie(SessionName, sessionHandler.SessionId));
                 }
             }
+            #endregion
 
             // Write the response
             if(string.IsNullOrEmpty(response.FileDownloadPath))
@@ -250,6 +255,7 @@ namespace IotWeb.Common.Http
             }
             else
             {
+                #region File Download
                 try
                 {
                     //File download is requested
@@ -275,10 +281,20 @@ namespace IotWeb.Common.Http
                     response.ResponseMessage = "Error in file download, " + e.Message;
                     response.Send(output);
                 }
+                #endregion
             }
 
             output.Flush();
-            handler?.RequestCompleted();
+
+            handler?.RequestCompleted(context);
+
+            #region Session
+            if (sessionHandler != null)
+            {
+                if (sessionHandler.IsChanged)
+                    sessionHandler.SaveSessionData();
+            }
+            #endregion
         }
         
 	    #region Internal Implementation

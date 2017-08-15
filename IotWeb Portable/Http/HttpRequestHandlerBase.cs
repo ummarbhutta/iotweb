@@ -21,7 +21,8 @@ namespace IotWeb.Common.Http
         /// This method is called when all the contents are written to output stream,
         /// If a cleanup is required regarding a specific request, child class should override this method
         /// </summary>
-        public virtual void RequestCompleted()
+        /// <param name="context">HttpContext passed to request completed</param>
+        public virtual void RequestCompleted(HttpContext context)
         {
 
         }
