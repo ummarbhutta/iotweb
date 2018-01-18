@@ -66,6 +66,9 @@
     <Compile Include="Helper\FileDownloadProviderFactory.cs" />
     <Compile Include="Helper\HybridSessionStorageHandler.cs" />
     <Compile Include="HttpServer.cs" />
+    <Compile Include="HttpsServer.cs" />
+    <Compile Include="Https\BaseHttpsServer.cs" />
+    <Compile Include="HttpsSocketServer.cs" />
     <Compile Include="SocketServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

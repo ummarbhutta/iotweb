@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using IotWeb.Common;
+using IotWeb.Common.Http;
+using IotWeb.Common.Interfaces;
 
 namespace IotWeb.Server
 {
 	public class SocketServer : ISocketServer
 	{
+
 		// Constants
 		private const int BackLog = 5; // Maximum pending requests
 
@@ -38,7 +42,11 @@ namespace IotWeb.Server
 
 		public bool Running { get; private set; }
 
-		public event ServerStoppedHandler ServerStopped;
+        public ISessionStorageHandler SessionStorageHandler => throw new NotImplementedException();
+
+        public IFileDownloadProviderFactory DownloadProviderFactoryInstance => throw new NotImplementedException();
+
+        public event ServerStoppedHandler ServerStopped;
 
 		/// <summary>
 		/// Constructor with a port to listen on
@@ -99,6 +107,7 @@ namespace IotWeb.Server
                                     if (m_handler != null)
                                     {
                                         client.ReceiveTimeout = 0;
+                                        Debug.WriteLine(hostname);
                                         m_handler(
                                             this,
                                             hostname,
@@ -143,5 +152,34 @@ namespace IotWeb.Server
 			}
 		}
 
+        public bool ApplyBeforeFilters(HttpRequest request, HttpResponse response, HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ApplyAfterFilters(HttpRequest request, HttpResponse response, HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IHttpRequestHandler GetHandlerForUri(string uri, out string partialUri)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IWebSocketRequestHandler GetHandlerForWebSocket(string uRI, out string partial)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddHttpRequestHandler(string uri, HttpRequestHandlerBase handler)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddWebSocketRequestHandler(string uri, IWebSocketRequestHandler handler)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

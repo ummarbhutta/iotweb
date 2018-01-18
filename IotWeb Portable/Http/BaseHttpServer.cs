@@ -120,7 +120,7 @@ namespace IotWeb.Common.Http
         /// <param name="request"></param>
         /// <param name="response"></param>
         /// <param name="context"></param>
-        internal bool ApplyBeforeFilters(HttpRequest request, HttpResponse response, HttpContext context)
+        public bool ApplyBeforeFilters(HttpRequest request, HttpResponse response, HttpContext context)
         {
 			bool allowHandling = true;
             lock (m_filters)
@@ -146,7 +146,7 @@ namespace IotWeb.Common.Http
 		/// <param name="request"></param>
 		/// <param name="response"></param>
 		/// <param name="context"></param>
-		internal void ApplyAfterFilters(HttpRequest request, HttpResponse response, HttpContext context)
+		public void ApplyAfterFilters(HttpRequest request, HttpResponse response, HttpContext context)
 		{
 			lock (m_filters)
 			{
@@ -170,7 +170,7 @@ namespace IotWeb.Common.Http
         /// <param name="uri"></param>
         /// <param name="partialUri"></param>
         /// <returns></returns>
-        internal IHttpRequestHandler GetHandlerForUri(string uri, out string partialUri)
+        public IHttpRequestHandler GetHandlerForUri(string uri, out string partialUri)
         {
             partialUri = uri;
             int length = 0;
@@ -197,7 +197,7 @@ namespace IotWeb.Common.Http
 		/// <param name="uri"></param>
 		/// <param name="partialUri"></param>
 		/// <returns></returns>
-		internal IWebSocketRequestHandler GetHandlerForWebSocket(string uri, out string partialUri)
+		public IWebSocketRequestHandler GetHandlerForWebSocket(string uri, out string partialUri)
 		{
 			partialUri = uri;
 			int length = 0;

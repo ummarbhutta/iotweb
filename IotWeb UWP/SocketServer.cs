@@ -7,6 +7,8 @@ using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Networking.Connectivity;
 using IotWeb.Common;
+using IotWeb.Common.Http;
+using IotWeb.Common.Interfaces;
 
 namespace IotWeb.Server
 {
@@ -36,6 +38,10 @@ namespace IotWeb.Server
                 }
             }
         }
+
+        public ISessionStorageHandler SessionStorageHandler => throw new NotImplementedException();
+
+        public IFileDownloadProviderFactory DownloadProviderFactoryInstance => throw new NotImplementedException();
 
         public event ServerStoppedHandler ServerStopped;
 
@@ -112,5 +118,34 @@ namespace IotWeb.Server
             }
         }
 
+        public bool ApplyBeforeFilters(HttpRequest request, HttpResponse response, HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ApplyAfterFilters(HttpRequest request, HttpResponse response, HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IHttpRequestHandler GetHandlerForUri(string uri, out string partialUri)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IWebSocketRequestHandler GetHandlerForWebSocket(string uRI, out string partial)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddHttpRequestHandler(string uri, HttpRequestHandlerBase handler)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddWebSocketRequestHandler(string uri, IWebSocketRequestHandler handler)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

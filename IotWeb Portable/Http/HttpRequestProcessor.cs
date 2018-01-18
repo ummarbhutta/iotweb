@@ -6,12 +6,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using IotWeb.Common.Util;
-using Newtonsoft.Json;
 using IotWeb.Common.Interfaces;
 
 namespace IotWeb.Common.Http
 {
-	class HttpRequestProcessor
+	public class HttpRequestProcessor
 	{
 		// Regular expression for parsing the start line
 		private static Regex RequestStartLine = new Regex(@"^([a-zA-z]+)[ ]+([^ ]+)[ ]+[hH][tT][tT][pP]/([0-9]\.[0-9])$");
@@ -52,19 +51,19 @@ namespace IotWeb.Common.Http
 		private int m_index;
 		private bool m_connected;
 		private string m_lastHeader;
-        private BaseHttpServer m_server;
+        private IServer m_server;
 
         /// <summary>
         /// Default constructor
         /// </summary>
-		public HttpRequestProcessor(BaseHttpServer server)
+		public HttpRequestProcessor(IServer server)
 		{
 			m_buffer = new byte[InputBufferSize];
 			m_index = 0;
 			m_connected = true;
 			m_lastHeader = null;
             m_server = server;
-		}
+        }
 
         /// <summary>
         /// Handle the HTTP connection

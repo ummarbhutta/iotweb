@@ -3,6 +3,8 @@ using System.Threading;
 using IotWeb.Server;
 using IotWeb.Common.Util;
 using IotWeb.Common.Http;
+using System.Security.Cryptography.X509Certificates;
+using IotWeb.Common;
 
 namespace WebHost.Desktop
 {
@@ -30,10 +32,23 @@ namespace WebHost.Desktop
 
 	class Program
 	{
+        static bool USE_SSL = true;
         static void Main(string[] args)
 		{
-            // Set up and run the server
-			HttpServer server = new HttpServer(8000, new SessionConfiguration());
+            IServer server;
+            if (USE_SSL)
+            {
+                // Set up and run the server
+                string Certificate = "my.cert.pfx";
+                // Load the certificate into an X509Certificate object.
+                X509Certificate2 cert = new X509Certificate2(Certificate);
+                server = new HttpsServer(8000, new SessionConfiguration(), cert);
+            }
+            else
+            {
+                server = new HttpServer(8000, new SessionConfiguration());
+            }
+
             server.AddHttpRequestHandler(
                 "/",
                 new HttpResourceHandler(
@@ -42,7 +57,8 @@ namespace WebHost.Desktop
                     "index.html"
                     )
                 );
-			server.AddWebSocketRequestHandler(
+
+            server.AddWebSocketRequestHandler(
 				"/sockets/",
 				new WebSocketHandler()
 				);
