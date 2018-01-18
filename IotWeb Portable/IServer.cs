@@ -3,7 +3,7 @@ using IotWeb.Common.Interfaces;
 
 namespace IotWeb.Common
 {
-	public delegate void ServerStoppedHandler(IServer server);
+	public delegate void ServerStoppedHandler(ISocketServer server);
 
 	public interface IServer
 	{

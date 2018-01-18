@@ -155,36 +155,7 @@ namespace IotWeb.Server
                 Running = false;
             }
         }
-
-        public bool ApplyBeforeFilters(HttpRequest request, HttpResponse response, HttpContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ApplyAfterFilters(HttpRequest request, HttpResponse response, HttpContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IHttpRequestHandler GetHandlerForUri(string uri, out string partialUri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IWebSocketRequestHandler GetHandlerForWebSocket(string uRI, out string partial)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddHttpRequestHandler(string uri, HttpRequestHandlerBase handler)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddWebSocketRequestHandler(string uri, IWebSocketRequestHandler handler)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 
 }

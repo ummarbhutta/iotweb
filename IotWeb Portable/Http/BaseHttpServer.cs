@@ -43,11 +43,11 @@ namespace IotWeb.Common.Http
 			m_wsHandlers = new Dictionary<string, IWebSocketRequestHandler>();
 		}
 
-		private void OnServerStopped(IServer server)
+		private void OnServerStopped(ISocketServer server)
 		{
 			ServerStoppedHandler handler = ServerStopped;
 			if (handler != null)
-				handler(this);
+				handler(this.SocketServer);
 		}
 
 		public void Start()

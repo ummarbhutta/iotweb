@@ -49,9 +49,9 @@ namespace IotWeb.Server.Https
             m_wsHandlers = new Dictionary<string, IWebSocketRequestHandler>();
         }
 
-        private void OnServerStopped(IServer server)
+        private void OnServerStopped(ISocketServer server)
         {
-            ServerStopped?.Invoke(this);
+            ServerStopped?.Invoke(this.SocketServer);
         }
 
         public void Start()
