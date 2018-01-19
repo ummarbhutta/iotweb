@@ -71,6 +71,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Http\BaseHttpServer.cs" />
+    <Compile Include="Http\BaseHttpsServer.cs" />
     <Compile Include="Http\CaseInsensitiveDictionary.cs" />
     <Compile Include="Http\HttpContext.cs" />
     <Compile Include="Http\HttpException.cs" />

@@ -10,7 +10,7 @@ using IotWeb.Common.Interfaces;
 
 namespace IotWeb.Common.Http
 {
-	public class HttpRequestProcessor
+	class HttpRequestProcessor
 	{
 		// Regular expression for parsing the start line
 		private static Regex RequestStartLine = new Regex(@"^([a-zA-z]+)[ ]+([^ ]+)[ ]+[hH][tT][tT][pP]/([0-9]\.[0-9])$");

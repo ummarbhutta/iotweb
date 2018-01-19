@@ -10,7 +10,7 @@ using IotWeb.Common.Interfaces;
 
 namespace IotWeb.Server
 {
-	public class SocketServer : ISocketServer
+	public class HttpSocketServer : ISocketServer
 	{
 
 		// Constants
@@ -42,17 +42,13 @@ namespace IotWeb.Server
 
 		public bool Running { get; private set; }
 
-        public ISessionStorageHandler SessionStorageHandler => throw new NotImplementedException();
-
-        public IFileDownloadProviderFactory DownloadProviderFactoryInstance => throw new NotImplementedException();
-
         public event ServerStoppedHandler ServerStopped;
 
 		/// <summary>
 		/// Constructor with a port to listen on
 		/// </summary>
 		/// <param name="port"></param>
-		public SocketServer(int port)
+		public HttpSocketServer(int port)
 		{
 			Port = port;
 		}
@@ -151,35 +147,6 @@ namespace IotWeb.Server
 				Running = false;
 			}
 		}
-
-        public bool ApplyBeforeFilters(HttpRequest request, HttpResponse response, HttpContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ApplyAfterFilters(HttpRequest request, HttpResponse response, HttpContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IHttpRequestHandler GetHandlerForUri(string uri, out string partialUri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IWebSocketRequestHandler GetHandlerForWebSocket(string uRI, out string partial)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddHttpRequestHandler(string uri, HttpRequestHandlerBase handler)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddWebSocketRequestHandler(string uri, IWebSocketRequestHandler handler)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

@@ -44,20 +44,16 @@ namespace IotWeb.Server
 
         public bool Running { get; private set; }
 
-        public ISessionStorageHandler SessionStorageHandler => throw new NotImplementedException();
-
-        public IFileDownloadProviderFactory DownloadProviderFactoryInstance => throw new NotImplementedException();
-
         public event ServerStoppedHandler ServerStopped;
 
         /// <summary>
         /// Constructor with a port to listen on
         /// </summary>
         /// <param name="port"></param>
-        public HttpsSocketServer(int port, X509Certificate serverCertificate)
+        public HttpsSocketServer(int port, string serverCertificate, string password)
         {
             Port = port;
-            this.serverCertificate = serverCertificate;
+            this.serverCertificate = new X509Certificate2(serverCertificate,password);
         }
 
         public void Start()

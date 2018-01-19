@@ -32,17 +32,15 @@ namespace WebHost.Desktop
 
 	class Program
 	{
-        static bool USE_SSL = true;
+        static bool USE_SSL = true;     // set to false when using http
         static void Main(string[] args)
 		{
             IServer server;
             if (USE_SSL)
             {
                 // Set up and run the server
-                string Certificate = "my.cert.pfx";
-                // Load the certificate into an X509Certificate object.
-                X509Certificate2 cert = new X509Certificate2(Certificate);
-                server = new HttpsServer(8000, new SessionConfiguration(), cert);
+                string certificate = "my.cert.pfx";
+                server = new HttpsServer(8000, new SessionConfiguration(), certificate,"ABC123ssi");
             }
             else
             {

@@ -12,7 +12,7 @@ using IotWeb.Common.Interfaces;
 
 namespace IotWeb.Server
 {
-    public class SocketServer : ISocketServer
+    public class HttpSocketServer : ISocketServer
     {
         // Instance variables
         private ConnectionHandler m_handler;
@@ -39,13 +39,9 @@ namespace IotWeb.Server
             }
         }
 
-        public ISessionStorageHandler SessionStorageHandler => throw new NotImplementedException();
-
-        public IFileDownloadProviderFactory DownloadProviderFactoryInstance => throw new NotImplementedException();
-
         public event ServerStoppedHandler ServerStopped;
 
-        public SocketServer(int port)
+        public HttpSocketServer(int port)
         {
             Running = false;
             Port = port;
