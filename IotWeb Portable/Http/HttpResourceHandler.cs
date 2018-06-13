@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace IotWeb.Common.Http
 {
-    public class HttpResourceHandler : IHttpRequestHandler
+    public class HttpResourceHandler : HttpRequestHandlerBase
     {
         // Instance variables
         private Assembly m_assembly;
@@ -30,7 +30,7 @@ namespace IotWeb.Common.Http
             return resourceNs;
         }
 
-        public void HandleRequest(string uri, HttpRequest request, HttpResponse response, HttpContext context)
+        public override void HandleRequest(string uri, HttpRequest request, HttpResponse response, HttpContext context)
         {
             if (request.Method != HttpMethod.Get)
                 throw new HttpMethodNotAllowedException();

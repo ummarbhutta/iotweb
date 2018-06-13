@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using IotWeb.Common.Util;
 using Newtonsoft.Json;
+using IotWeb.Common.Interfaces;
 
 namespace IotWeb.Common.Http
 {
@@ -83,6 +84,7 @@ namespace IotWeb.Common.Http
             HttpException parseError = null;
 			HttpContext context = null;
             SessionHandler sessionHandler = null;
+            HttpRequestHandlerBase handler = null;
 
             // Process the request
             try
@@ -147,6 +149,7 @@ namespace IotWeb.Common.Http
 				context = new HttpContext();
                 response = new HttpResponse();
 
+                #region Session
                 //Get session id from cookies
                 var sessionId = GetSessionIdentifier(request.Cookies);
                 var isNewRequest = string.IsNullOrEmpty(sessionId);
@@ -181,7 +184,9 @@ namespace IotWeb.Common.Http
                         response.Cookies.Add(new Cookie(SessionName, sessionHandler.SessionId));
                     }
                 }
-                
+
+                #endregion
+
                 // Apply filters
                 if (m_server.ApplyBeforeFilters(request, response, context))
 				{
@@ -204,7 +209,7 @@ namespace IotWeb.Common.Http
 					}
 					// Dispatch to the handler
 					string partialUri;
-					IHttpRequestHandler handler = m_server.GetHandlerForUri(request.URI, out partialUri);
+					handler = m_server.GetHandlerForUri(request.URI, out partialUri) as HttpRequestHandlerBase;
 					if (handler == null)
 						throw new HttpNotFoundException();
                     handler.HandleRequest(partialUri, request, response, context);
@@ -228,6 +233,7 @@ namespace IotWeb.Common.Http
 			// Apply the after filters here
 			m_server.ApplyAfterFilters(request, response, context);
 
+            #region Session
             //Update the session before sending the response
             if (sessionHandler != null)
             {
@@ -240,10 +246,55 @@ namespace IotWeb.Common.Http
                     response.Cookies.Add(new Cookie(SessionName, sessionHandler.SessionId));
                 }
             }
+            #endregion
 
             // Write the response
-            response.Send(output);
+            if(string.IsNullOrEmpty(response.FileDownloadPath))
+            {
+                response.Send(output);
+            }
+            else
+            {
+                #region File Download
+                try
+                {
+                    //File download is requested
+                    IFileDownloadProvider dlProvider = m_server?.DownloadProviderFactoryInstance?.GetFileDownloadProvider();
+                    if (dlProvider != null)
+                    {
+                        //download provider registered
+                        using (Stream fstream = dlProvider.GetFileStream(response.FileDownloadPath))
+                        {
+                            response.Content = fstream;
+                            response.Content.Position = fstream.Length;
+                            response.Send(output);
+                        }
+                    }
+                    else
+                    {
+                        //TODO: Handle the error, If for some reason download provider can't be retrieved
+                    }
+                }catch(Exception e)
+                {
+                    response.FileDownloadPath = null;
+                    response.ResponseCode = HttpResponseCode.InternalServerError;
+                    response.ResponseMessage = "Error in file download, " + e.Message;
+                    response.Send(output);
+                }
+                #endregion
+            }
+
             output.Flush();
+
+            handler?.RequestCompleted(context);
+
+            #region Session
+            if (sessionHandler != null)
+            {
+                if (sessionHandler.IsChanged)
+                    sessionHandler.SaveSessionData();
+            }
+            #endregion
         }
         
 	    #region Internal Implementation

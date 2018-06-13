@@ -14,75 +14,90 @@ namespace IotWeb.Common.Http
 
 		public string ResponseMessage { get; set; }
 
-		internal HttpResponse()
+        public string FileDownloadPath { get; set; }
+
+        internal HttpResponse()
 			: base()
 		{
 			ResponseCode = HttpResponseCode.Ok;
 			ResponseMessage = null;
             Content = new MemoryStream();
 		}
-        
-		/// <summary>
-		/// Write the response to the output stream
-		/// </summary>
-		/// <param name="output"></param>
-		internal void Send(Stream output, HttpVersion version = HttpVersion.Ver1_0)
-		{
+
+        /// <summary>
+        /// Write the response to the output stream
+        /// </summary>
+        /// <param name="output"></param>
+        internal void Send(Stream output, HttpVersion version = HttpVersion.Ver1_0)
+        {
             // Write the response start line
             /////////////////////////////////Changes done locally to fix HTTP 1.1 on Safari 10 websocket error on 22.11.2016/////////////////////
             if (version == HttpVersion.Ver1_0)
             {
                 WriteLine(output, String.Format("HTTP/1.0 {0} {1}", ResponseCode.ResponseCode(), ResponseCode.ResponseMessage(ResponseMessage)));
             }
-            else if(version == HttpVersion.Ver1_1)
+            else if (version == HttpVersion.Ver1_1)
             {
                 WriteLine(output, String.Format("HTTP/1.1 {0} {1}", ResponseCode.ResponseCode(), ResponseCode.ResponseMessage(ResponseMessage)));
             }
             /////////////////////////////////Changes done locally to fix HTTP 1.1 on Safari 10 websocket error on 22.11.2016/////////////////////
             // Set content length accordingly
             Headers[HttpHeaders.ContentLength] = Content.Position.ToString();
+
+            if (!string.IsNullOrEmpty(this.FileDownloadPath))
+            {
+                var fileName = Path.GetFileName(this.FileDownloadPath);
+                Headers[HttpHeaders.ContentType] = MimeType.FromExtension(fileName);
+                Headers[HttpHeaders.ContentDisposition] = $"attachment;filename=\"{fileName}\"";
+            }
+
             // Write the headers
             foreach (string header in Headers.Keys)
                 WriteLine(output, string.Format("{0}: {1}", header, Headers[header]));
             // Write the cookies
-			if (Cookies.Count > 0) 
-			{
-				StringBuilder sb = new StringBuilder();
-				foreach (Cookie cookie in Cookies)
-				{
-					sb.Append(HttpHeaders.SetCookie + ": ");
-					// Add the value
-					sb.Append(String.Format("{0}={1}", cookie.Name, cookie.Value));
-					// Add the path
-					if ((cookie.Path != null) && (cookie.Path.Length > 0))
-						sb.Append(string.Format("; Path={0}", cookie.Path));
-					// Add the domain
-					if ((cookie.Domain != null) && (cookie.Domain.Length > 0))
-						sb.Append(string.Format("; Domain={0}", cookie.Domain));
-					// Set the expiry
-					if (cookie.Expires != DateTime.MinValue) 
-					{
-						DateTime utc = cookie.Expires.ToUniversalTime();
-						sb.Append("; Expires=");
-						sb.Append(utc.ToString(@"ddd, dd-MMM-yyyy HH:mm:ss G\MT"));
-					}
-					// Set the security
-					if (cookie.Secure)
-						sb.Append("; Secure");
-					if (cookie.HttpOnly)
-						sb.Append("; HttpOnly");
-					// Write the header
-					WriteLine(output, sb.ToString());
-					sb.Clear();
-				}
-			}
+            if (Cookies.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Cookie cookie in Cookies)
+                {
+                    sb.Append(HttpHeaders.SetCookie + ": ");
+                    // Add the value
+                    sb.Append(String.Format("{0}={1}", cookie.Name, cookie.Value));
+                    // Add the path
+                    if ((cookie.Path != null) && (cookie.Path.Length > 0))
+                        sb.Append(string.Format("; Path={0}", cookie.Path));
+                    // Add the domain
+                    if ((cookie.Domain != null) && (cookie.Domain.Length > 0))
+                        sb.Append(string.Format("; Domain={0}", cookie.Domain));
+                    // Set the expiry
+                    if (cookie.Expires != DateTime.MinValue)
+                    {
+                        DateTime utc = cookie.Expires.ToUniversalTime();
+                        sb.Append("; Expires=");
+                        sb.Append(utc.ToString(@"ddd, dd-MMM-yyyy HH:mm:ss G\MT"));
+                    }
+                    // Set the security
+                    if (cookie.Secure)
+                        sb.Append("; Secure");
+                    if (cookie.HttpOnly)
+                        sb.Append("; HttpOnly");
+                    // Write the header
+                    WriteLine(output, sb.ToString());
+                    sb.Clear();
+                }
+            }
             // Write the body
             WriteLine(output, "");
-            long bytesToWrite = Content.Position;
-            Content.SetLength(bytesToWrite);
+            if (string.IsNullOrEmpty(this.FileDownloadPath))
+            {
+                //Not a file download
+                long bytesToWrite = Content.Position;
+                Content.SetLength(bytesToWrite);
+            }
             Content.Seek(0, SeekOrigin.Begin);
             Content.CopyTo(output);
-		}
+        }
+
 
         /// <summary>
         /// Write a single line in UTF8 terminated by a CR/LF pair
